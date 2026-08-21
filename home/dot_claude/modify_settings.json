@@ -10,13 +10,20 @@
       "skipWorkflowUsageWarning" true
       "theme" "dark"
       "enabledPlugins" (dict
-        "superpowers@superpowers-marketplace" true
+        "superpowers@superpowers-marketplace" false
+        "mattpocock-skills@mattpocock" true
       )
       "extraKnownMarketplaces" (dict
         "superpowers-marketplace" (dict
           "source" (dict
             "source" "github"
             "repo" "obra/superpowers-marketplace"
+          )
+        )
+        "mattpocock" (dict
+          "source" (dict
+            "source" "github"
+            "repo" "mattpocock/skills"
           )
         )
         "home-assistant-skills" (dict
