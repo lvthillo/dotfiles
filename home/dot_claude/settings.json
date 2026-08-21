@@ -3,6 +3,7 @@
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
+  "model": "claude-fable-5[1m]",
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true
   },
