@@ -1,0 +1,30 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Overlay managed keys onto the live file; keys Claude Code owns (model) pass through. */ -}}
+{{- $current := dict -}}
+{{- if .chezmoi.stdin -}}
+{{-   $current = fromJson .chezmoi.stdin -}}
+{{- end -}}
+{{- $managed := dict
+      "outputStyle" "Concise"
+      "tui" "fullscreen"
+      "skipWorkflowUsageWarning" true
+      "theme" "dark"
+      "enabledPlugins" (dict
+        "superpowers@superpowers-marketplace" true
+      )
+      "extraKnownMarketplaces" (dict
+        "superpowers-marketplace" (dict
+          "source" (dict
+            "source" "github"
+            "repo" "obra/superpowers-marketplace"
+          )
+        )
+        "home-assistant-skills" (dict
+          "source" (dict
+            "source" "github"
+            "repo" "homeassistant-ai/skills"
+          )
+        )
+      )
+-}}
+{{- mergeOverwrite $current $managed | toPrettyJson -}}
