@@ -9,8 +9,11 @@ set -gx GOPATH "$HOME/go"
 set -gx JAVA_HOME /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
 set -gx AWS_CA_BUNDLE /opt/homebrew/etc/ca-certificates/cert.pem
 set -gx NODE_EXTRA_CA_CERTS "$HOME/.zcli/zscaler_root.pem"
-set -gx SSL_CERT_FILE "$HOME/.zcli/zscaler_root.pem"
-set -gx REQUESTS_CA_BUNDLE "$HOME/.zcli/zscaler_root.pem"
+# Homebrew's bundle merges keychain-trusted certs (incl. corporate roots) with
+# the Mozilla roots; SSL_CERT_FILE *replaces* a tool's trust store, so it must
+# point at a complete bundle, never at a single corporate root cert.
+set -gx SSL_CERT_FILE /opt/homebrew/etc/ca-certificates/cert.pem
+set -gx REQUESTS_CA_BUNDLE /opt/homebrew/etc/ca-certificates/cert.pem
 
 # Bitwarden's SSH agent serves SSH identities and git SSH signing once its
 # keys are onboarded; until then the on-disk keys keep working.
