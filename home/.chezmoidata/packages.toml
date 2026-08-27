@@ -61,6 +61,7 @@ casks = [
   "font-fira-code-nerd-font",
   "font-meslo-lg-nerd-font",
   "ghostty",
+  "github-copilot-app",
   "intellij-idea",
   "kiro",
   "mactex",
