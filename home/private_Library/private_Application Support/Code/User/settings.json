@@ -28,6 +28,7 @@
   },
   "gitlens.codeLens.enabled": false,
   "prettier.requireConfig": true,
+  "remote.autoForwardPorts": false,
   "security.workspace.trust.enabled": false,
   "terminal.external.osxExec": "Ghostty.app",
   "workbench.colorTheme": "Catppuccin Macchiato",
