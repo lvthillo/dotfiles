@@ -18,6 +18,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.fontFamily": "MesloLGS Nerd Font, Menlo, Monaco, 'Courier New', monospace",
   "editor.formatOnSave": true,
+  "extensions.ignoreRecommendations": true,
   "github.copilot.chat.agent.autoFix": true,
   "github.copilot.chat.codesearch.enabled": true,
   "github.copilot.enable": {
