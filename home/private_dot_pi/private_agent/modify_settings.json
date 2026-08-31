@@ -10,6 +10,7 @@
       "theme" "dark"
       "defaultProvider" "openai-codex"
       "defaultModel" "gpt-5.5"
+      "defaultProjectTrust" "always"
       "packages" (list "git:github.com/samfoy/pi-lsp-extension")
 -}}
 {{- mergeOverwrite $current $managed | toPrettyJson -}}
