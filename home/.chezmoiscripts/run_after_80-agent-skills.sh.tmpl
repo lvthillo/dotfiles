@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+# Reconcile global agent skills to the set declared in
+# .chezmoidata/agents.toml: wipe everything, then re-add. Skills installed
+# outside this manifest are removed too.
+{{- if .agents.skills.enabled }}
+npx -y skills remove --all --global --yes
+{{- range $repo, $names := .agents.skills.sources }}
+npx -y skills add {{ $repo | quote }} --global --yes{{ range $.agents.skills.agents }} --agent {{ . | quote }}{{ end }} --skill{{ range $names }} {{ . | quote }}{{ end }}
+{{- end }}
+{{- end }}
