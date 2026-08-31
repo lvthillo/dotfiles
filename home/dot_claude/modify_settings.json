@@ -4,23 +4,10 @@
 {{- if .chezmoi.stdin -}}
 {{-   $current = fromJson .chezmoi.stdin -}}
 {{- end -}}
-{{- $superpowersDisabled := dict
-      "brainstorming" "user-invocable-only"
-      "dispatching-parallel-agents" "user-invocable-only"
-      "executing-plans" "user-invocable-only"
-      "finishing-a-development-branch" "user-invocable-only"
-      "subagent-driven-development" "user-invocable-only"
-      "systematic-debugging" "user-invocable-only"
-      "test-driven-development" "user-invocable-only"
-      "using-git-worktrees" "user-invocable-only"
-      "using-superpowers" "user-invocable-only"
-      "verification-before-completion" "user-invocable-only"
--}}
 {{- $managed := dict
       "outputStyle" "Concise"
       "tui" "fullscreen"
       "skipWorkflowUsageWarning" true
       "theme" "dark"
-      "skillOverrides" $superpowersDisabled
 -}}
 {{- mergeOverwrite $current $managed | toPrettyJson -}}
