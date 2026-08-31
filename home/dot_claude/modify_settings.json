@@ -4,34 +4,23 @@
 {{- if .chezmoi.stdin -}}
 {{-   $current = fromJson .chezmoi.stdin -}}
 {{- end -}}
+{{- $superpowersDisabled := dict
+      "brainstorming" "user-invocable-only"
+      "dispatching-parallel-agents" "user-invocable-only"
+      "executing-plans" "user-invocable-only"
+      "finishing-a-development-branch" "user-invocable-only"
+      "subagent-driven-development" "user-invocable-only"
+      "systematic-debugging" "user-invocable-only"
+      "test-driven-development" "user-invocable-only"
+      "using-git-worktrees" "user-invocable-only"
+      "using-superpowers" "user-invocable-only"
+      "verification-before-completion" "user-invocable-only"
+-}}
 {{- $managed := dict
       "outputStyle" "Concise"
       "tui" "fullscreen"
       "skipWorkflowUsageWarning" true
       "theme" "dark"
-      "enabledPlugins" (dict
-        "superpowers@superpowers-marketplace" false
-        "mattpocock-skills@mattpocock" true
-      )
-      "extraKnownMarketplaces" (dict
-        "superpowers-marketplace" (dict
-          "source" (dict
-            "source" "github"
-            "repo" "obra/superpowers-marketplace"
-          )
-        )
-        "mattpocock" (dict
-          "source" (dict
-            "source" "github"
-            "repo" "mattpocock/skills"
-          )
-        )
-        "home-assistant-skills" (dict
-          "source" (dict
-            "source" "github"
-            "repo" "homeassistant-ai/skills"
-          )
-        )
-      )
+      "skillOverrides" $superpowersDisabled
 -}}
 {{- mergeOverwrite $current $managed | toPrettyJson -}}

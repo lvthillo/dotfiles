@@ -55,6 +55,8 @@ formulae = [
 casks = [
   "bitwarden",
   "claude-code@latest",
+  "codex",
+  "codex-app",
   "copilot-cli",
   "docker-desktop",
   "firefox",
