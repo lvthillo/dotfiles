@@ -1,0 +1,14 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Overlay managed keys onto the live file; keys Codex owns pass through. */ -}}
+{{- $current := dict -}}
+{{- if .chezmoi.stdin -}}
+{{-   $current = fromToml .chezmoi.stdin -}}
+{{- end -}}
+{{- $managed := dict
+      "approval_policy" "never"
+      "default_permissions" ":workspace"
+      "projects" (dict
+        "/Users/lovanthillo/personal/repos/dotfiles" (dict "trust_level" "trusted")
+      )
+-}}
+{{- mergeOverwrite $current $managed | toToml -}}
