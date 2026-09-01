@@ -6,6 +6,7 @@
 {{- end -}}
 {{- $managed := dict
       "outputStyle" "Concise"
+      "permissions" (dict "defaultMode" "auto")
       "tui" "fullscreen"
       "skipWorkflowUsageWarning" true
       "theme" "dark"
