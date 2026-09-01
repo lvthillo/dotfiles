@@ -4,9 +4,9 @@
 {{- if .chezmoi.stdin -}}
 {{-   $current = fromToml .chezmoi.stdin -}}
 {{- end -}}
-{{- $_ := unset $current "default_permissions" -}}
 {{- $managed := dict
       "approval_policy" "never"
+      "default_permissions" ":danger-full-access"
       "projects" (dict
         "/Users/lovanthillo/personal/repos/dotfiles" (dict "trust_level" "trusted")
       )
