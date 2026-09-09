@@ -1,5 +1,5 @@
 [packages]
-taps = ["cloudsmith-io/cloudsmith-cli"]
+taps = ["can1357/tap", "cloudsmith-io/cloudsmith-cli"]
 formulae = [
   "act",
   "ansible",
@@ -10,6 +10,7 @@ formulae = [
   "bat",
   "bitwarden-cli",
   "black",
+  "can1357/tap/omp",
   "cfn-lint",
   "chezmoi",
   "cloudflared",
