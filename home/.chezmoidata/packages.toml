@@ -1,5 +1,5 @@
 [packages]
-taps = ["can1357/tap", "cloudsmith-io/cloudsmith-cli"]
+taps = ["can1357/tap", "cloudsmith-io/cloudsmith-cli", "oven-sh/bun"]
 formulae = [
   "act",
   "ansible",
@@ -39,6 +39,7 @@ formulae = [
   "mcp-publisher",
   "opencode",
   "openjdk",
+  "oven-sh/bun/bun",
   "pinentry-mac",
   "pre-commit",
   "snyk-cli",

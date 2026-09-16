@@ -44,8 +44,12 @@ Global skills are an authoritative set: every apply removes undeclared skills
 and reinstalls the inventory in `home/.chezmoidata/agents.toml`.
 
 All skills follow the latest upstream on each apply.
-Ponytail's always-on OMP rule also refreshes on each apply and loads automatically
-in OMP sessions; no activation command is needed.
+Native Ponytail plugins add automatic Full-mode activation in OMP, Claude Code,
+and Copilot CLI. They also update on each apply; restart existing sessions to
+load updates. Shared skills remain available independently.
+
+Ponytail's generic root manifest hides its Copilot hooks. The setup selects the
+supplied Copilot-specific manifest after each plugin update.
 
 ## Migrating this machine off Nix
 

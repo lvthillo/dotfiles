@@ -44,4 +44,4 @@ agents = ["claude-code", "github-copilot"]
   "writing-shape",
 ]
 "https://github.com/homeassistant-ai/skills" = ["home-assistant-best-practices"]
-"https://github.com/DietrichGebert/ponytail" = ["ponytail", "ponytail-review", "ponytail-audit", "ponytail-debt", "ponytail-gain", "ponytail-help"]
+"https://github.com/DietrichGebert/ponytail" = ["*"]
