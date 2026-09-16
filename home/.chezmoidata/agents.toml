@@ -1,6 +1,6 @@
 [agents.skills]
 enabled = true
-agents = ["claude-code", "codex", "github-copilot"]
+agents = ["claude-code", "github-copilot"]
 
 [agents.skills.sources]
 "https://github.com/cursor/plugins" = ["unslop"]
