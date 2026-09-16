@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+{{- range .agents.plugins.omp }}
+omp plugin install {{ . | quote }}
+omp --profile claude plugin install {{ . | quote }}
+{{- end }}
+
+{{- range $marketplace, $config := .agents.plugins.marketplaces }}
+claude plugin marketplace add {{ $config.source | quote }}
+claude plugin marketplace update {{ $marketplace | quote }}
+
+marketplaces=$(copilot plugin marketplace list --json)
+if ! printf '%s\n' "$marketplaces" | jq -e --arg name {{ $marketplace | quote }} 'any(.[]; .name == $name)' >/dev/null; then
+  copilot plugin marketplace add {{ $config.source | quote }}
+fi
+copilot plugin marketplace update {{ $marketplace | quote }}
+
+{{- range $config.plugins }}
+{{- $plugin := printf "%s@%s" . $marketplace }}
+# Install also re-enables disabled plugins; update refreshes existing installs.
+claude plugin install {{ $plugin | quote }} --scope user
+claude plugin update {{ $plugin | quote }} --scope user
+copilot plugin install {{ $plugin | quote }}
+copilot plugin update {{ $plugin | quote }}
+
+# Copilot prefers the root manifest, even when a Copilot-specific one exists.
+plugin_dir="${COPILOT_HOME:-$HOME/.copilot}/installed-plugins/"{{ printf "%s/%s" $marketplace . | quote }}
+if [ -f "$plugin_dir/.github/plugin/plugin.json" ]; then
+  cp "$plugin_dir/.github/plugin/plugin.json" "$plugin_dir/plugin.json"
+fi
+{{- end }}
+{{- end }}
