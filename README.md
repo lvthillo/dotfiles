@@ -38,6 +38,15 @@ chezmoi update
 This updates the source state and Homebrew software, then repairs managed
 drift. (`dot-sync` is the Fish alias for it.)
 
+## Agent skills
+
+Global skills are an authoritative set: every apply removes undeclared skills
+and reinstalls the inventory in `home/.chezmoidata/agents.toml`.
+
+All skill sources, including Ponytail, follow the latest upstream on each apply.
+Ponytail's always-on OMP rule also refreshes on each apply and loads automatically
+in OMP sessions; no activation command is needed.
+
 ## Migrating this machine off Nix
 
 See `docs/migration.md` for the one-time cutover: freezing nix-darwin,

@@ -1,6 +1,6 @@
 [agents.skills]
 enabled = true
-agents = ["claude-code", "codex", "github-copilot"]
+agents = ["claude-code", "github-copilot"]
 
 [agents.skills.sources]
 "https://github.com/cursor/plugins" = ["unslop"]
@@ -44,3 +44,4 @@ agents = ["claude-code", "codex", "github-copilot"]
   "writing-shape",
 ]
 "https://github.com/homeassistant-ai/skills" = ["home-assistant-best-practices"]
+"https://github.com/DietrichGebert/ponytail" = ["ponytail", "ponytail-review", "ponytail-audit", "ponytail-debt", "ponytail-gain", "ponytail-help"]

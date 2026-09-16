@@ -1,0 +1,7 @@
+{{- if .agents.skills.enabled }}
+[".agents/rules/ponytail.md"]
+type = "file"
+url = "https://raw.githubusercontent.com/DietrichGebert/ponytail/main/.cursor/rules/ponytail.mdc"
+# Expire between invocations; zero would cache indefinitely.
+refreshPeriod = "1ns"
+{{- end }}
