@@ -3,6 +3,7 @@ set -eu
 
 # Native plugins provide automatic activation; shared skills remain client-neutral.
 omp plugin install git:github.com/DietrichGebert/ponytail
+omp --profile claude plugin install git:github.com/DietrichGebert/ponytail
 
 claude plugin marketplace add DietrichGebert/ponytail
 claude plugin marketplace update ponytail
