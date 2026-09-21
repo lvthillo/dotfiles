@@ -40,6 +40,7 @@ formulae = [
   "opencode",
   "openjdk",
   "oven-sh/bun/bun",
+  "pi-coding-agent",
   "pinentry-mac",
   "pre-commit",
   "snyk-cli",

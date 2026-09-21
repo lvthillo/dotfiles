@@ -21,9 +21,13 @@ converge_omp() {
   "$@" plugin install {{ . | quote }}
 {{- end }}
   installed=$("$@" plugin list --json)
-  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_omp" '.npm[].name as $name | select($declared | index($name) | not) | $name')
+  # OMP declares npm packages here; user-scoped marketplace installs are extra.
+  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_omp" '
+    (.npm[].name | select(. as $name | $declared | index($name) | not)),
+    (.marketplace[] | select(.scope == "user") | .id)
+  ')
   for name in $undeclared; do
-    "$@" plugin uninstall "npm:$name"
+    "$@" plugin uninstall "$name" --scope user
   done
 }
 
@@ -44,13 +48,25 @@ if command -v claude >/dev/null 2>&1; then
 {{- end }}
 
   installed=$(claude plugin list --json)
-  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_plugins" '.[] | select(.scope == "user") | .id as $id | select(((($id | endswith("@claude-plugins-official")) or ($id | endswith("@synced"))) | not) and ($declared | index($id) | not)) | $id')
+  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_plugins" '
+    .[] | select(.scope == "user") | .id
+    | select(endswith("@claude-plugins-official") or endswith("@synced") | not)
+    | select(. as $id | $declared | index($id) | not)
+  ')
   for id in $undeclared; do
     claude plugin uninstall "$id" --scope user --yes
   done
 
+  # Marketplace removal also uninstalls its project/local plugins.
+  installed=$(claude plugin list --json)
   registered=$(claude plugin marketplace list --json)
-  undeclared=$(printf '%s\n' "$registered" | jq -r --argjson declared "$declared_marketplaces" '.[] | .name as $name | select($name != "claude-plugins-official" and ($declared | index($name) | not)) | $name')
+  undeclared=$(printf '%s\n' "$registered" | jq -r \
+    --argjson declared "$declared_marketplaces" --argjson installed "$installed" '
+    ($installed | map(.id | split("@") | last)) as $in_use
+    | .[].name
+    | select(. != "claude-plugins-official")
+    | select(. as $name | $declared + $in_use | index($name) | not)
+  ')
   for name in $undeclared; do
     claude plugin marketplace remove "$name"
   done
