@@ -1,33 +1,91 @@
+{{- $declaredOmp := list -}}
+{{- range .agents.plugins.omp }}
+{{- $declaredOmp = append $declaredOmp (trimSuffix "@latest" (trimPrefix "npm:" .)) -}}
+{{- end }}
+{{- $declaredMarketplaces := keys .agents.plugins.marketplaces -}}
+{{- $declaredPlugins := list -}}
+{{- range $marketplace, $config := .agents.plugins.marketplaces }}
+{{- range $config.plugins }}
+{{- $declaredPlugins = append $declaredPlugins (printf "%s@%s" . $marketplace) -}}
+{{- end }}
+{{- end }}
 #!/bin/sh
 set -eu
 
+declared_omp={{ $declaredOmp | toJson | quote }}
+declared_marketplaces={{ $declaredMarketplaces | toJson | quote }}
+declared_plugins={{ $declaredPlugins | toJson | quote }}
+
+converge_omp() {
 {{- range .agents.plugins.omp }}
-omp plugin install {{ . | quote }}
-omp --profile claude plugin install {{ . | quote }}
+  "$@" plugin install {{ . | quote }}
 {{- end }}
+  installed=$("$@" plugin list --json)
+  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_omp" '.npm[].name as $name | select($declared | index($name) | not) | $name')
+  for name in $undeclared; do
+    "$@" plugin uninstall "npm:$name"
+  done
+}
 
-{{- range $marketplace, $config := .agents.plugins.marketplaces }}
-claude plugin marketplace add {{ $config.source | quote }}
-claude plugin marketplace update {{ $marketplace | quote }}
-
-marketplaces=$(copilot plugin marketplace list --json)
-if ! printf '%s\n' "$marketplaces" | jq -e --arg name {{ $marketplace | quote }} 'any(.[]; .name == $name)' >/dev/null; then
-  copilot plugin marketplace add {{ $config.source | quote }}
+if command -v omp >/dev/null 2>&1; then
+  converge_omp omp
+  converge_omp omp --profile claude
 fi
-copilot plugin marketplace update {{ $marketplace | quote }}
 
+if command -v claude >/dev/null 2>&1; then
+{{- range $marketplace, $config := .agents.plugins.marketplaces }}
+  claude plugin marketplace add {{ $config.source | quote }}
+  claude plugin marketplace update {{ $marketplace | quote }}
 {{- range $config.plugins }}
 {{- $plugin := printf "%s@%s" . $marketplace }}
-# Install also re-enables disabled plugins; update refreshes existing installs.
-claude plugin install {{ $plugin | quote }} --scope user
-claude plugin update {{ $plugin | quote }} --scope user
-copilot plugin install {{ $plugin | quote }}
-copilot plugin update {{ $plugin | quote }}
+  claude plugin install {{ $plugin | quote }} --scope user
+  claude plugin update {{ $plugin | quote }} --scope user
+{{- end }}
+{{- end }}
 
-# Copilot prefers the root manifest, even when a Copilot-specific one exists.
-plugin_dir="${COPILOT_HOME:-$HOME/.copilot}/installed-plugins/"{{ printf "%s/%s" $marketplace . | quote }}
-if [ -f "$plugin_dir/.github/plugin/plugin.json" ]; then
-  cp "$plugin_dir/.github/plugin/plugin.json" "$plugin_dir/plugin.json"
+  installed=$(claude plugin list --json)
+  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_plugins" '.[] | select(.scope == "user") | .id as $id | select(((($id | endswith("@claude-plugins-official")) or ($id | endswith("@synced"))) | not) and ($declared | index($id) | not)) | $id')
+  for id in $undeclared; do
+    claude plugin uninstall "$id" --scope user --yes
+  done
+
+  registered=$(claude plugin marketplace list --json)
+  undeclared=$(printf '%s\n' "$registered" | jq -r --argjson declared "$declared_marketplaces" '.[] | .name as $name | select($name != "claude-plugins-official" and ($declared | index($name) | not)) | $name')
+  for name in $undeclared; do
+    claude plugin marketplace remove "$name"
+  done
 fi
+
+if command -v copilot >/dev/null 2>&1; then
+  registered=$(copilot plugin marketplace list --json)
+{{- range $marketplace, $config := .agents.plugins.marketplaces }}
+  if ! printf '%s\n' "$registered" | jq -e --arg name {{ $marketplace | quote }} 'any(.[]; .name == $name)' >/dev/null; then
+    copilot plugin marketplace add {{ $config.source | quote }}
+  fi
+  copilot plugin marketplace update {{ $marketplace | quote }}
+{{- range $config.plugins }}
+{{- $plugin := printf "%s@%s" . $marketplace }}
+  # Install also re-enables disabled plugins; update refreshes existing installs.
+  copilot plugin install {{ $plugin | quote }}
+  copilot plugin update {{ $plugin | quote }}
+
+  # Copilot prefers the root manifest, even when a Copilot-specific one exists.
+  plugin_dir="${COPILOT_HOME:-$HOME/.copilot}/installed-plugins/"{{ printf "%s/%s" $marketplace . | quote }}
+  if [ -f "$plugin_dir/.github/plugin/plugin.json" ]; then
+    cp "$plugin_dir/.github/plugin/plugin.json" "$plugin_dir/plugin.json"
+  fi
 {{- end }}
 {{- end }}
+
+  installed=$(copilot plugin list --json)
+  undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_plugins" '.[] | "\(.name)@\(.marketplace)" as $id | select($declared | index($id) | not) | $id')
+  for id in $undeclared; do
+    copilot plugin uninstall "$id"
+  done
+
+  registered=$(copilot plugin marketplace list --json)
+  undeclared=$(printf '%s\n' "$registered" | jq -r --argjson declared "$declared_marketplaces" '.[] | .name as $name | select((.isDefault | not) and ($declared | index($name) | not)) | $name')
+  for name in $undeclared; do
+    copilot plugin marketplace remove "$name"
+  done
+fi
