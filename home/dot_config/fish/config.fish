@@ -32,6 +32,8 @@ if status is-interactive
     alias lt 'eza --tree --level=2'
     alias cat 'bat --paging=never'
 
+    alias omp-claude 'command omp --profile claude'
+
     alias sts 'aws sts get-caller-identity'
     alias tfapply 'terraform apply'
     alias tfplan 'terraform plan'

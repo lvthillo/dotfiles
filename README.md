@@ -35,8 +35,8 @@ destructive cleanup removes anything Sync reinstalls on every apply.
 chezmoi update
 ```
 
-This updates the source state and Homebrew software, then repairs managed
-drift. (`dot-sync` is the Fish alias for it.)
+This updates the source state, Homebrew software, agent skills, and agent
+plugins, then repairs managed drift. (`dot-sync` is the Fish alias for it.)
 
 ## Migrating this machine off Nix
 
