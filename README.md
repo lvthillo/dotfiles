@@ -38,6 +38,9 @@ chezmoi update
 This updates the source state, Homebrew software, agent skills, and agent
 plugins, then repairs managed drift. (`dot-sync` is the Fish alias for it.)
 
+Manage software in `home/.chezmoidata/packages.toml`. Remove apps there,
+not just from the machine, so convergence does not reinstall them.
+
 ## Migrating this machine off Nix
 
 See `docs/migration.md` for the one-time cutover: freezing nix-darwin,

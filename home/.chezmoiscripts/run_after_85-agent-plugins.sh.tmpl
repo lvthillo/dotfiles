@@ -16,24 +16,19 @@ declared_omp={{ $declaredOmp | toJson | quote }}
 declared_marketplaces={{ $declaredMarketplaces | toJson | quote }}
 declared_plugins={{ $declaredPlugins | toJson | quote }}
 
-converge_omp() {
+if command -v omp >/dev/null 2>&1; then
 {{- range .agents.plugins.omp }}
-  "$@" plugin install {{ . | quote }}
+  omp plugin install {{ . | quote }}
 {{- end }}
-  installed=$("$@" plugin list --json)
+  installed=$(omp plugin list --json)
   # OMP declares npm packages here; user-scoped marketplace installs are extra.
   undeclared=$(printf '%s\n' "$installed" | jq -r --argjson declared "$declared_omp" '
     (.npm[].name | select(. as $name | $declared | index($name) | not)),
     (.marketplace[] | select(.scope == "user") | .id)
   ')
   for name in $undeclared; do
-    "$@" plugin uninstall "$name" --scope user
+    omp plugin uninstall "$name" --scope user
   done
-}
-
-if command -v omp >/dev/null 2>&1; then
-  converge_omp omp
-  converge_omp omp --profile claude
 fi
 
 if command -v claude >/dev/null 2>&1; then
