@@ -3,7 +3,7 @@ enabled = true
 agents = ["claude-code", "github-copilot"]
 
 [agents.skills.sources]
-"https://github.com/cursor/plugins" = ["unslop"]
+"https://github.com/cursor/plugins/tree/main/pstack/skills/unslop" = ["unslop"]
 "https://github.com/mattpocock/skills" = [
   "ask-matt",
   "claude-handoff",
@@ -23,7 +23,6 @@ agents = ["claude-code", "github-copilot"]
   "migrate-to-shoehorn",
   "prototype",
   "research",
-  "resolving-merge-conflicts",
   "retro",
   "scaffold-exercises",
   "setup-matt-pocock-skills",
